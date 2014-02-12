@@ -1,6 +1,5 @@
-
 class Reply
-  attr_reader :id, :subject_question_id, :parent_reply_id, :author_id, :body
+  attr_accessor :id, :subject_question_id, :parent_reply_id, :author_id, :body
 
   def self.all
     replies = QuestionsDatabase.instance.execute("SELECT * FROM replies")
@@ -74,4 +73,29 @@ class Reply
     SQL
     replies.map { |reply_data| Reply.new(reply_data) }
    end
+
+   def save
+     if self.id.nil?
+       params = [@subject_question_id, @parent_reply_id, @author_id, @body]
+       QuestionsDatabase.instance.execute(<<-SQL, *params)
+
+       INSERT INTO
+         replies(subject_question_id, parent_reply_id, author_id, body)
+       VALUES
+         (?, ?, ?, ?)
+       SQL
+       @id = QuestionsDatabase.instance.last_insert_row_id
+     else
+       params = [@title, @body, @user_id, @id]
+       QuestionsDatabase.instance.execute(<<-SQL, *params)
+
+       UPDATE
+         replies(subject_question_id, parent_reply_id, author_id, body)
+       SET
+         subject_question_id = ?, parent_reply_id = ?, author_id = ?, body = ?
+       WHERE
+         replies.id = ?
+       SQL
+       nil
+     end
 end

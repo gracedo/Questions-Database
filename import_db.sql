@@ -77,18 +77,3 @@ INSERT INTO
   replies(subject_question_id, parent_reply_id, author_id, body)
 VALUES
   ((SELECT id FROM questions WHERE title = 'Lunch'), (SELECT id FROM replies WHERE parent_reply_id IS NULL), (SELECT id FROM users WHERE lname = 'Kutnick'), "1 minute");
-
-
-
---
---
--- INSERT INTO questions(title, body, user_id)
--- VALUES ('Homework', 'How much HW?', (SELECT id FROM users WHERE lname = 'Do'));
---
--- INSERT INTO questions(title, body, user_id)
--- VALUES ('Hello', 'Goodbye??', (SELECT id FROM users WHERE lname = 'Do'));
---
--- INSERT INTO
---   question_likes(liker_id, question_id)
--- VALUES
---   ((SELECT id FROM users WHERE lname = 'Do'), (SELECT id FROM questions WHERE title = 'Blah'))

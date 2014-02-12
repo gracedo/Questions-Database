@@ -1,7 +1,5 @@
-
-
 class Question
-  attr_reader :id, :title, :body, :user_id
+  attr_accessor :id, :title, :body, :user_id
 
   def self.all
     questions = QuestionsDatabase.instance.execute("SELECT * FROM questions")
@@ -65,5 +63,31 @@ class Question
 
   def self.most_liked(n)
     Like.most_liked_questions(n)
+  end
+
+  def save
+    if self.id.nil?
+      params = [@title, @body, @user_id]
+      QuestionsDatabase.instance.execute(<<-SQL, *params)
+
+      INSERT INTO
+        questions(title, body, user_id)
+      VALUES
+        (?, ?, ?)
+      SQL
+      @id = QuestionsDatabase.instance.last_insert_row_id
+    else
+      params = [@title, @body, @user_id, @id]
+      QuestionsDatabase.instance.execute(<<-SQL, *params)
+
+      UPDATE
+        questions(title, body, user_id)
+      SET
+        title = ?, body = ?, user_id = ?
+      WHERE
+        questions.id = ?
+      SQL
+      nil
+    end
   end
 end

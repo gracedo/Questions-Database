@@ -1,5 +1,5 @@
 class User
-  attr_reader :fname, :lname, :id
+  attr_accessor :fname, :lname, :id
 
   def self.all
     users = QuestionsDatabase.instance.execute("SELECT * FROM users")
@@ -72,5 +72,31 @@ class User
       )
       SQL
     avg[0][0]
+  end
+
+  def save
+    if self.id.nil?
+      params = [@fname, @lname]
+      QuestionsDatabase.instance.execute(<<-SQL, *params)
+
+      INSERT INTO
+        users(fname, lname)
+      VALUES
+        (?, ?)
+      SQL
+      @id = QuestionsDatabase.instance.last_insert_row_id
+    else
+      params = [@fname, @lname, @id]
+      QuestionsDatabase.instance.execute(<<-SQL, *params)
+
+      UPDATE
+        users
+      SET
+        fname = ?, lname = ?
+      WHERE
+        users.id = ?
+      SQL
+      nil
+    end
   end
 end
