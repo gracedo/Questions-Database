@@ -80,7 +80,15 @@ VALUES
 
 
 
-
 --
--- INSERT INTO question_likes(liker_id, question_id) VALUES ((SELECT id FROM users WHERE lname = 'Kutnick'),
--- (SELECT id FROM questions WHERE title = 'Lunch'));
+--
+-- INSERT INTO questions(title, body, user_id)
+-- VALUES ('Homework', 'How much HW?', (SELECT id FROM users WHERE lname = 'Do'));
+--
+-- INSERT INTO questions(title, body, user_id)
+-- VALUES ('Hello', 'Goodbye??', (SELECT id FROM users WHERE lname = 'Do'));
+--
+-- INSERT INTO
+--   question_likes(liker_id, question_id)
+-- VALUES
+--   ((SELECT id FROM users WHERE lname = 'Do'), (SELECT id FROM questions WHERE title = 'Blah'))

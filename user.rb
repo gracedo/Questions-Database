@@ -1,5 +1,3 @@
-
-
 class User
   attr_reader :fname, :lname, :id
 
@@ -49,5 +47,30 @@ class User
 
   def followed_questions
     Question.followed_questions_for_user_id(@id)
+  end
+
+  def liked_questions
+    Like.liked_questions_for_user_id(@id)
+  end
+
+  def average_karma
+    id = @id
+    avg = QuestionsDatabase.instance.execute(<<-SQL, id)
+    SELECT
+      AVG(num_likes)
+    FROM
+      (SELECT
+        COUNT(liker_id) num_likes
+      FROM
+        questions
+      LEFT OUTER JOIN
+        question_likes ql ON ql.question_id = questions.id
+      WHERE
+        questions.user_id = ?
+      GROUP BY
+        questions.id
+      )
+      SQL
+    avg[0][0]
   end
 end
